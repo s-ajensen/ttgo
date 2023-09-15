@@ -6,6 +6,14 @@ func getTestBoard() *board {
 	return &board{x, blank, blank, o, blank, blank, blank, x, o}
 }
 
+func getTieBoard() *board {
+	return &board{x, o, x, x, o, x, o, x, o}
+}
+
+func getWinBoard() *board {
+	return &board{x, x, x, o, o, x, o, o, x}
+}
+
 func TestIdentifiesRows(t *testing.T) {
 	rows := getTestBoard().getRows()
 
@@ -61,8 +69,7 @@ func TestDoesNotCount_UnfinishedGame_AsTie(t *testing.T) {
 }
 
 func TestDeterminesTie(t *testing.T) {
-	b := board{x, o, x, x, o, x, o, x, o}
-	assert(t, b.isTied())
+	assert(t, getTieBoard().isTied())
 }
 
 func TestDoesNotCount_FullWin_AsTie(t *testing.T) {

@@ -2,24 +2,24 @@ package ttgo
 
 import "testing"
 
-func emptyLine() line {
+func getEmptyLine() line {
 	return line{blank, blank, blank}
 }
 
-func fullLine() line {
+func getFullLine() line {
 	return line{x, x, x}
 }
 
-func oneValLine() line {
+func getOneValLine() line {
 	return line{x, blank, blank}
 }
 
 func TestIsUniform_EmptyLine(t *testing.T) {
-	assert(t, emptyLine().isUniform())
+	assert(t, getEmptyLine().isUniform())
 }
 
 func TestIsNotUniform_WithSingleValue(t *testing.T) {
-	assert(t, !oneValLine().isUniform())
+	assert(t, !getOneValLine().isUniform())
 }
 
 func TestIsNotUniform_WithDifferentValues(t *testing.T) {
@@ -28,17 +28,17 @@ func TestIsNotUniform_WithDifferentValues(t *testing.T) {
 }
 
 func TestIsUniform_WithFullLine(t *testing.T) {
-	assert(t, fullLine().isUniform())
+	assert(t, getFullLine().isUniform())
 }
 
 func TestIsEmpty_EmptyLine(t *testing.T) {
-	assert(t, emptyLine().isEmpty())
+	assert(t, getEmptyLine().isEmpty())
 }
 
 func TestIsNotEmpty_WithSingleValue(t *testing.T) {
-	assert(t, !oneValLine().isEmpty())
+	assert(t, !getOneValLine().isEmpty())
 }
 
 func TestIsNotEmpty_FullLine(t *testing.T) {
-	assert(t, !fullLine().isEmpty())
+	assert(t, !getFullLine().isEmpty())
 }
