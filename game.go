@@ -9,8 +9,3 @@ const (
 )
 
 type board [9]piece
-
-func (b board) move(i int, p piece) board {
-	b[i] = p
-	return b
-}
