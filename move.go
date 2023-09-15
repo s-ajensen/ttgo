@@ -6,7 +6,8 @@ func (b board) move(i int, p piece) board {
 }
 
 func (b *board) isWon() bool {
-	lines := append(b.getRows(), b.getCols()...)
+	lines := append(b.getRows(),
+		append(b.getCols(), b.getDiags()...)...)
 	for _, line := range lines {
 		if line.isUniform() && !line.isEmpty() {
 			return true

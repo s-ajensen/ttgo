@@ -25,3 +25,11 @@ func TestDeterminesWinByColumn(t *testing.T) {
 
 	assert(t, winBoard.isWon())
 }
+
+func TestDeterminesWinByDiags(t *testing.T) {
+	winBoardX := board{x, o, o, b, x, b, b, b, x}
+	winBoardO := board{x, x, o, x, o, b, o, b, b}
+
+	assert(t, winBoardX.isWon())
+	assert(t, winBoardO.isWon())
+}
