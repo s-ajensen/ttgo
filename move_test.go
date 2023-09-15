@@ -19,3 +19,9 @@ func TestDeterminesWinByRow(t *testing.T) {
 	assert(t, !unfinishedBoard.isWon())
 	assert(t, winBoard.isWon())
 }
+
+func TestDeterminesWinByColumn(t *testing.T) {
+	winBoard := board{x, o, o, x, b, b, x, b, b}
+
+	assert(t, winBoard.isWon())
+}
