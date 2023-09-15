@@ -5,17 +5,19 @@ type line []piece
 
 const boardSize int = 3
 
-func (b *board) curPiece() piece {
-	xCount := 0
-	oCount := 0
-	for _, p := range b {
-		if p == x {
-			xCount++
-		}
-		if p == o {
-			oCount++
+func (b *board) pieceCount(p piece) int {
+	count := 0
+	for i := range b {
+		if b[i] == p {
+			count++
 		}
 	}
+	return count
+}
+
+func (b *board) curPiece() piece {
+	xCount := b.pieceCount(x)
+	oCount := b.pieceCount(o)
 	if xCount == oCount {
 		return x
 	}
@@ -52,8 +54,8 @@ func (pieces line) isUniform() bool {
 }
 
 func (pieces line) isEmpty() bool {
-	for _, p := range pieces {
-		if p != b {
+	for i := range pieces {
+		if pieces[i] != blank {
 			return false
 		}
 	}
