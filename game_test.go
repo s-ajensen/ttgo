@@ -23,7 +23,7 @@ func TestInitializesBoardBlank(t *testing.T) {
 }
 
 func TestTokensAssigned(t *testing.T) {
-	assertEquals(t, piece(0), blank)
+	assertEquals(t, piece(0), b)
 	assertEquals(t, piece(1), x)
 	assertEquals(t, piece(2), o)
 }
