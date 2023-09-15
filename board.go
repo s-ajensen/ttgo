@@ -1,7 +1,6 @@
 package ttgo
 
 type board [9]piece
-type line []piece
 
 const boardSize int = 3
 
@@ -49,15 +48,18 @@ func (b *board) getDiags() []line {
 	return diags[:]
 }
 
-func (pieces line) isUniform() bool {
-	return (pieces[0] == pieces[1]) && (pieces[1] == pieces[2])
-}
-
-func (pieces line) isEmpty() bool {
-	for i := range pieces {
-		if pieces[i] != blank {
-			return false
+func (b *board) isWon() bool {
+	lines := append(b.getRows(),
+		append(b.getCols(), b.getDiags()...)...)
+	for _, line := range lines {
+		if line.isUniform() && !line.isEmpty() {
+			return true
 		}
 	}
-	return true
+	return false
+}
+
+func (b *board) isTied() bool {
+	isFull := b.pieceCount(x)+b.pieceCount(o) == len(b)
+	return !b.isWon() && isFull
 }

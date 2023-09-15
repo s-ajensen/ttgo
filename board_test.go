@@ -29,20 +29,61 @@ func TestIdentifiesDiags(t *testing.T) {
 	assertSliceEquals(t, line{blank, blank, blank}, diags[1])
 }
 
-func TestIsUniformLine(t *testing.T) {
-	uniformLine := line{x, x, x}
-	nonUniformLine := line{x, o, x}
+func TestDeterminesWinByRow(t *testing.T) {
+	var unfinishedBoard board
+	winBoard := board{x, x, x, blank, o, o, o, blank, blank}
 
-	assert(t, uniformLine.isUniform())
-	assert(t, !nonUniformLine.isUniform())
+	assert(t, !unfinishedBoard.isWon())
+	assert(t, winBoard.isWon())
 }
 
-func TestIsEmptyLine(t *testing.T) {
-	emptyLine := line{blank, blank, blank}
-	populatedLine := line{x, blank, blank}
-	fullLine := line{x, x, o}
+func TestDeterminesWinByColumn(t *testing.T) {
+	winBoard := board{x, o, o, x, blank, blank, x, blank, blank}
+	assert(t, winBoard.isWon())
+}
 
-	assert(t, emptyLine.isEmpty())
-	assert(t, !populatedLine.isEmpty())
-	assert(t, !fullLine.isEmpty())
+func TestDeterminesWinByDiags(t *testing.T) {
+	winBoardX := board{x, o, o, blank, x, blank, blank, blank, x}
+	winBoardO := board{x, x, o, x, o, blank, o, blank, blank}
+
+	assert(t, winBoardX.isWon())
+	assert(t, winBoardO.isWon())
+}
+
+func TestDoesNotCount_NewGame_AsTie(t *testing.T) {
+	var b board
+	assert(t, !b.isTied())
+}
+
+func TestDoesNotCount_UnfinishedGame_AsTie(t *testing.T) {
+	b := board{x, blank, blank, blank, blank, blank, blank, blank, blank}
+	assert(t, !b.isTied())
+}
+
+func TestDeterminesTie(t *testing.T) {
+	b := board{x, o, x, x, o, x, o, x, o}
+	assert(t, b.isTied())
+}
+
+func TestDoesNotCount_FullWin_AsTie(t *testing.T) {
+	b := board{x, o, x, o, x, o, x, o, x}
+	assert(t, !b.isTied())
+}
+
+func TestCalcsNextPiecePlayed_BlankBoard(t *testing.T) {
+	var b board
+	assertEquals(t, b.curPiece(), x)
+}
+
+func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
+	b := board{x, blank, blank, blank, blank, blank, blank, blank, blank}
+	assertEquals(t, b.curPiece(), o)
+}
+
+func TestCalcsNextPiecePlayed_ManyMovesPlayed(t *testing.T) {
+	xBoard := board{x, o, blank, blank, blank, blank, blank, blank, blank}
+	oBoard := board{x, blank, x, blank, blank, blank, blank, blank, blank}
+
+	assertEquals(t, xBoard.curPiece(), x)
+	assertEquals(t, oBoard.curPiece(), o)
 }
