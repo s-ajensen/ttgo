@@ -5,6 +5,23 @@ type line []piece
 
 const boardSize int = 3
 
+func (b *board) curPiece() piece {
+	xCount := 0
+	oCount := 0
+	for _, p := range b {
+		if p == x {
+			xCount++
+		}
+		if p == o {
+			oCount++
+		}
+	}
+	if xCount == oCount {
+		return x
+	}
+	return o
+}
+
 func (b *board) getRows() []line {
 	return []line{
 		b[:3], b[3:6], b[6:9],

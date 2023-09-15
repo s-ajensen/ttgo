@@ -22,7 +22,6 @@ func TestDeterminesWinByRow(t *testing.T) {
 
 func TestDeterminesWinByColumn(t *testing.T) {
 	winBoard := board{x, o, o, x, b, b, x, b, b}
-
 	assert(t, winBoard.isWon())
 }
 
@@ -32,4 +31,22 @@ func TestDeterminesWinByDiags(t *testing.T) {
 
 	assert(t, winBoardX.isWon())
 	assert(t, winBoardO.isWon())
+}
+
+func TestCalcsNextPiecePlayed_BlankBoard(t *testing.T) {
+	var b board
+	assertEquals(t, b.curPiece(), x)
+}
+
+func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
+	b := board{x, b, b, b, b, b, b, b, b}
+	assertEquals(t, b.curPiece(), o)
+}
+
+func TestCalcsNextPiecePlayed_ManyMovesPlayed(t *testing.T) {
+	xBoard := board{x, o, b, b, b, b, b, b, b}
+	oBoard := board{x, b, x, b, b, b, b, b, b}
+
+	assertEquals(t, xBoard.curPiece(), x)
+	assertEquals(t, oBoard.curPiece(), o)
 }
