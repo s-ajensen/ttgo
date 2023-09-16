@@ -2,6 +2,11 @@ package ttgo
 
 import "testing"
 
+func getBlankBoard() *board {
+	var b board
+	return &b
+}
+
 func getTestBoard() *board {
 	return &board{x, blank, blank, o, blank, blank, blank, x, o}
 }
@@ -59,8 +64,7 @@ func TestDeterminesWinByDiags(t *testing.T) {
 }
 
 func TestDoesNotCount_NewGame_AsTie(t *testing.T) {
-	var b board
-	assert(t, !b.isTied())
+	assert(t, !getBlankBoard().isTied())
 }
 
 func TestDoesNotCount_UnfinishedGame_AsTie(t *testing.T) {
@@ -78,8 +82,7 @@ func TestDoesNotCount_FullWin_AsTie(t *testing.T) {
 }
 
 func TestCalcsNextPiecePlayed_BlankBoard(t *testing.T) {
-	var b board
-	assertEquals(t, b.curPiece(), x)
+	assertEquals(t, getBlankBoard().curPiece(), x)
 }
 
 func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
@@ -89,8 +92,32 @@ func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
 
 func TestCalcsNextPiecePlayed_ManyMovesPlayed(t *testing.T) {
 	xBoard := board{x, o, blank, blank, blank, blank, blank, blank, blank}
-	oBoard := board{x, blank, x, blank, blank, blank, blank, blank, blank}
+	oBoard := board{x, o, x, blank, blank, blank, blank, blank, blank}
 
 	assertEquals(t, xBoard.curPiece(), x)
 	assertEquals(t, oBoard.curPiece(), o)
+}
+
+func TestOpenPositions_ReturnsAllIndices_BlankBoard(t *testing.T) {
+	expected := []int{0, 1, 2, 3, 4, 5, 6, 7, 8}
+	assertSliceEquals(t, expected, getBlankBoard().getOpenSpaces())
+}
+
+func TestOpenPositiong_ReturnsEmptyArray_FullBoard(t *testing.T) {
+	expected := []int{}
+	assertSliceEquals(t, expected, getTieBoard().getOpenSpaces())
+}
+
+func TestOpenPositions_ReturnsOpen_WithSingleMove(t *testing.T) {
+	b := board{x, blank, blank, blank, blank, blank, blank, blank, blank}
+	expected := []int{1, 2, 3, 4, 5, 6, 7, 8}
+
+	assertSliceEquals(t, expected, b.getOpenSpaces())
+}
+
+func TestOpenPositiong_ReturnsOpen_WithManyMoves(t *testing.T) {
+	b := board{x, o, x, blank, x, blank, blank, blank, o}
+	expected := []int{3, 5, 6, 7}
+
+	assertSliceEquals(t, expected, b.getOpenSpaces())
 }

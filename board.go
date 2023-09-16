@@ -63,3 +63,13 @@ func (b *board) isTied() bool {
 	isFull := b.pieceCount(x)+b.pieceCount(o) == len(b)
 	return !b.isWon() && isFull
 }
+
+func (b *board) getOpenSpaces() []int {
+	spaces := make([]int, 0, 9)
+	for i, p := range b {
+		if p == blank {
+			spaces = append(spaces, i)
+		}
+	}
+	return spaces
+}
