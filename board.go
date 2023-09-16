@@ -15,8 +15,7 @@ func (b *board) pieceCount(p piece) int {
 }
 
 func (b *board) curPiece() piece {
-	xCount := b.pieceCount(x)
-	oCount := b.pieceCount(o)
+	xCount, oCount := b.pieceCount(x), b.pieceCount(o)
 	if xCount == oCount {
 		return x
 	}
@@ -62,6 +61,10 @@ func (b *board) isWon() bool {
 func (b *board) isTied() bool {
 	isFull := b.pieceCount(x)+b.pieceCount(o) == len(b)
 	return !b.isWon() && isFull
+}
+
+func (b *board) isGameOver() bool {
+	return b.isWon() || b.isTied()
 }
 
 func (b *board) getOpenSpaces() []int {

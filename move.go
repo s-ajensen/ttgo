@@ -30,7 +30,7 @@ func (b *board) eval(bound int, depth int, compFn func(n int, m int) int, isMaxi
 }
 
 func minimax(b board, depth int, isMaximizing bool) int {
-	if b.isWon() || b.isTied() {
+	if b.isGameOver() {
 		return b.staticEval(isMaximizing) - depth
 	}
 	if isMaximizing {
