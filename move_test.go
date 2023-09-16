@@ -29,9 +29,9 @@ func TestEvaluatesWinAsMinusTen_WhenMinimizing(t *testing.T) {
 }
 
 func TestMinimaxReturnsStaticEval_WhenGameOver(t *testing.T) {
-	assertEquals(t, 0, minimax(*getTieBoard(), true))
-	assertEquals(t, 10, minimax(*getWinBoard(), true))
-	assertEquals(t, -10, minimax(*getWinBoard(), false))
+	assertEquals(t, 0, minimax(*getTieBoard(), 0, true))
+	assertEquals(t, 10, minimax(*getWinBoard(), 0, true))
+	assertEquals(t, -10, minimax(*getWinBoard(), 0, false))
 }
 
 func TestMinimaxPrefersWin_ToTie(t *testing.T) {
@@ -39,7 +39,7 @@ func TestMinimaxPrefersWin_ToTie(t *testing.T) {
 	winMove := b.move(7, o)
 	tieMove := b.move(8, o)
 
-	assert(t, minimax(winMove, true) > minimax(tieMove, true))
+	assert(t, minimax(winMove, 0, true) > minimax(tieMove, 0, true))
 }
 
 func TestMinimaxIdentifies_PlayerWin(t *testing.T) {
@@ -47,7 +47,7 @@ func TestMinimaxIdentifies_PlayerWin(t *testing.T) {
 	playerWinMove := b.move(7, o)
 	playerTieMove := b.move(8, o)
 
-	assert(t, minimax(playerWinMove, false) < minimax(playerTieMove, false))
+	assert(t, minimax(playerWinMove, 0, false) < minimax(playerTieMove, 0, false))
 }
 
 func TestMinimaxPrefersTie_ToPlayerWin(t *testing.T) {
@@ -55,5 +55,39 @@ func TestMinimaxPrefersTie_ToPlayerWin(t *testing.T) {
 	blockMove := b.move(5, o)
 	loseMove := b.move(2, o)
 
-	assert(t, minimax(blockMove, true) > minimax(loseMove, true))
+	assert(t, minimax(blockMove, 0, true) > minimax(loseMove, 0, true))
+}
+
+func TestMinimaxPrefersFastWin_ToSlow(t *testing.T) {
+	b := board{x, o, o, blank, blank, o, blank, x, x}
+	expected := b.move(4, x)
+
+	assertSliceEquals(t, expected, nextBoard(&b))
+}
+
+func TestMakesMove_EmptyBoard(t *testing.T) {
+	assert(t, !nextBoard(getBlankBoard()).isEmpty())
+}
+
+func TestMakesMove_PopulatedBoard(t *testing.T) {
+	b := getBlankBoard().move(2, x)
+	b = nextBoard(&b)
+
+	assertEquals(t, 7, len(b.getOpenSpaces()))
+}
+
+func TestNextBoard_TakesCornerFirstMove(t *testing.T) {
+	expected := getBlankBoard().move(2, x)
+	assertSliceEquals(t, expected, nextBoard(getBlankBoard()))
+}
+
+func TestNextBoard_BlocksCornerStrategy(t *testing.T) {
+	b := getBlankBoard().move(0, x)
+	expected := b.move(4, o)
+
+	assertSliceEquals(t, expected, nextBoard(&b))
+}
+
+func TestAlwaysWinsX(t *testing.T) {
+
 }
