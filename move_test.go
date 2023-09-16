@@ -13,19 +13,19 @@ func TestMovePlayedOnBlankBoard(t *testing.T) {
 }
 
 func TestEvaluatesTieAsZero_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().eval(true))
+	assertEquals(t, 0, getTieBoard().staticEval(true))
 }
 
 func TestEvaluatesTieAsZero_WhenMinimizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().eval(false))
+	assertEquals(t, 0, getTieBoard().staticEval(false))
 }
 
 func TestEvaluatesWinAsTen_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 10, getWinBoard().eval(true))
+	assertEquals(t, 10, getWinBoard().staticEval(true))
 }
 
 func TestEvaluatesWinAsMinusTen_WhenMinimizing(t *testing.T) {
-	assertEquals(t, -10, getWinBoard().eval(false))
+	assertEquals(t, -10, getWinBoard().staticEval(false))
 }
 
 func TestMinimaxReturnsStaticEval_WhenGameOver(t *testing.T) {
@@ -54,9 +54,6 @@ func TestMinimaxPrefersTie_ToPlayerWin(t *testing.T) {
 	b := board{x, o, blank, x, x, blank, o, x, o}
 	blockMove := b.move(5, o)
 	loseMove := b.move(2, o)
-
-	println(minimax(blockMove, true))
-	println(minimax(loseMove, true))
 
 	assert(t, minimax(blockMove, true) > minimax(loseMove, true))
 }
