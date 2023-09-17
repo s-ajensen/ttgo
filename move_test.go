@@ -4,6 +4,22 @@ import (
 	"testing"
 )
 
+func canLose(b board, playingAs string) bool {
+	resp := nextBoard(&b)
+	if resp.isGameOver() {
+		return playingAs != resp.getWinner() && "Tie" != resp.getWinner()
+	}
+	isLoss := false
+	for _, space := range resp.getOpenSpaces() {
+		newBoard := resp.move(space, resp.curPiece())
+		if newBoard.isGameOver() {
+			return playingAs != newBoard.getWinner() && "Tie" != newBoard.getWinner()
+		}
+		isLoss = isLoss || canLose(newBoard, playingAs)
+	}
+	return isLoss
+}
+
 func TestMovePlayedOnBlankBoard(t *testing.T) {
 	var blankBoard board
 	var playedBoard = blankBoard.move(0, x)
@@ -13,19 +29,19 @@ func TestMovePlayedOnBlankBoard(t *testing.T) {
 }
 
 func TestEvaluatesTieAsZero_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().staticEval(true))
+	assertEquals(t, 0, getTieBoard().evalStatic(true, 0))
 }
 
 func TestEvaluatesTieAsZero_WhenMinimizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().staticEval(false))
+	assertEquals(t, 0, getTieBoard().evalStatic(false, 0))
 }
 
 func TestEvaluatesWinAsTen_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 10, getWinBoard().staticEval(true))
+	assertEquals(t, 10, getWinBoard().evalStatic(true, 0))
 }
 
 func TestEvaluatesWinAsMinusTen_WhenMinimizing(t *testing.T) {
-	assertEquals(t, -10, getWinBoard().staticEval(false))
+	assertEquals(t, -10, getWinBoard().evalStatic(false, 0))
 }
 
 func TestMinimaxReturnsStaticEval_WhenGameOver(t *testing.T) {
@@ -77,8 +93,15 @@ func TestMakesMove_PopulatedBoard(t *testing.T) {
 }
 
 func TestNextBoard_TakesCornerFirstMove(t *testing.T) {
-	expected := getBlankBoard().move(2, x)
+	expected := getBlankBoard().move(0, x)
 	assertSliceEquals(t, expected, nextBoard(getBlankBoard()))
+}
+
+func TestBlocksPlayerWin(t *testing.T) {
+	b := board{x, o, x, blank, blank, blank, blank, o, blank}
+	expected := b.move(4, x)
+
+	assertSliceEquals(t, expected, nextBoard(&b))
 }
 
 func TestNextBoard_BlocksCornerStrategy(t *testing.T) {
@@ -89,5 +112,15 @@ func TestNextBoard_BlocksCornerStrategy(t *testing.T) {
 }
 
 func TestAlwaysWinsX(t *testing.T) {
+	assert(t, !canLose(*getBlankBoard(), "X"))
+}
 
+func TestAlwaysWinsO(t *testing.T) {
+	didLose := false
+	b := getBlankBoard()
+	for _, space := range b.getOpenSpaces() {
+		newBoard := b.move(space, b.curPiece())
+		didLose = didLose || canLose(newBoard, "O")
+	}
+	assert(t, !didLose)
 }

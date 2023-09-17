@@ -3,13 +3,12 @@ package ttgo
 import "testing"
 
 func (b board) isEmpty() bool {
-	res := true
 	for _, c := range b {
 		if c != 0 {
-			res = false
+			return false
 		}
 	}
-	return res
+	return true
 }
 
 func TestInitializesBoardOfSizeNine(t *testing.T) {
@@ -29,12 +28,16 @@ func TestTokensAssigned(t *testing.T) {
 }
 
 func TestWinnerReturnsX(t *testing.T) {
-	assertEquals(t, x, getWinBoard().getWinner())
+	assertEquals(t, "X", getWinBoard().getWinner())
 }
 
 func TestWinnerReturnsO(t *testing.T) {
 	oWinBoard := board{o, o, o, x, x, blank, x, blank, blank}
-	assertEquals(t, o, oWinBoard.getWinner())
+	assertEquals(t, "O", oWinBoard.getWinner())
+}
+
+func TestWinnerReturnsTie(t *testing.T) {
+	assertEquals(t, "Tie", getTieBoard().getWinner())
 }
 
 func TestWinnerReturnsPanicsForUnfinishedGame(t *testing.T) {

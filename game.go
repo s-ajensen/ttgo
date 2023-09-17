@@ -8,13 +8,16 @@ const (
 	o     = piece(2)
 )
 
-func (b *board) getWinner() piece {
+func (b *board) getWinner() string {
 	if !b.isGameOver() {
 		panic("Game is not over and has no winner!")
 	}
+	if b.isTied() {
+		return "Tie"
+	}
 	xCount, oCount := b.pieceCount(x), b.pieceCount(o)
 	if xCount == oCount {
-		return o
+		return "O"
 	}
-	return x
+	return "X"
 }
