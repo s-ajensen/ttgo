@@ -1,21 +1,21 @@
 package ttgo
 
-type piece byte
+type Piece byte
 
 const (
-	blank = piece(0)
-	x     = piece(1)
-	o     = piece(2)
+	blank = Piece(0)
+	x     = Piece(1)
+	o     = Piece(2)
 )
 
-func (b *board) getWinner() string {
-	if !b.isGameOver() {
+func (board *Board) getWinner() string {
+	if !board.isGameOver() {
 		panic("Game is not over and has no winner!")
 	}
-	if b.isTied() {
+	if board.isTied() {
 		return "Tie"
 	}
-	xCount, oCount := b.pieceCount(x), b.pieceCount(o)
+	xCount, oCount := board.pieceCount(x), board.pieceCount(o)
 	if xCount == oCount {
 		return "O"
 	}

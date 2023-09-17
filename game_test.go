@@ -2,8 +2,8 @@ package ttgo
 
 import "testing"
 
-func (b board) isEmpty() bool {
-	for _, c := range b {
+func (board Board) isEmpty() bool {
+	for _, c := range board {
 		if c != 0 {
 			return false
 		}
@@ -12,19 +12,19 @@ func (b board) isEmpty() bool {
 }
 
 func TestInitializesBoardOfSizeNine(t *testing.T) {
-	var b board
+	var b Board
 	assertEquals(t, 9, len(b))
 }
 
 func TestInitializesBoardBlank(t *testing.T) {
-	var b board
+	var b Board
 	assert(t, b.isEmpty())
 }
 
 func TestTokensAssigned(t *testing.T) {
-	assertEquals(t, piece(0), blank)
-	assertEquals(t, piece(1), x)
-	assertEquals(t, piece(2), o)
+	assertEquals(t, Piece(0), blank)
+	assertEquals(t, Piece(1), x)
+	assertEquals(t, Piece(2), o)
 }
 
 func TestWinnerReturnsX(t *testing.T) {
@@ -32,7 +32,7 @@ func TestWinnerReturnsX(t *testing.T) {
 }
 
 func TestWinnerReturnsO(t *testing.T) {
-	oWinBoard := board{o, o, o, x, x, blank, x, blank, blank}
+	oWinBoard := Board{o, o, o, x, x, blank, x, blank, blank}
 	assertEquals(t, "O", oWinBoard.getWinner())
 }
 

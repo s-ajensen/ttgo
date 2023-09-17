@@ -4,17 +4,17 @@ import (
 	"math"
 )
 
-func (b board) move(i int, p piece) board {
-	b[i] = p
-	return b
+func (board Board) move(i int, p Piece) Board {
+	board[i] = p
+	return board
 }
 
-func (b *board) evalStatic(isMaximizing bool, depth int) int {
+func (board *Board) evalStatic(isMaximizing bool, depth int) int {
 	scalar := 1
 	if !isMaximizing {
 		scalar = -1
 	}
-	if b.isWon() {
+	if board.isWon() {
 		return (10 - depth) * scalar
 	}
 	return 0
@@ -34,17 +34,17 @@ func getBound(isMaximizing bool) int {
 	return math.MaxInt
 }
 
-func (b *board) eval(depth int, isMaximizing bool) int {
+func (board *Board) eval(depth int, isMaximizing bool) int {
 	eval := getBound(isMaximizing)
 	compFn := getCompFn(isMaximizing)
-	for _, space := range b.getOpenSpaces() {
-		newBoard := b.move(space, b.curPiece())
+	for _, space := range board.getOpenSpaces() {
+		newBoard := board.move(space, board.curPiece())
 		eval = compFn(eval, minimax(newBoard, depth+1, isMaximizing))
 	}
 	return eval
 }
 
-func minimax(b board, depth int, isMaximizing bool) int {
+func minimax(b Board, depth int, isMaximizing bool) int {
 	if b.isGameOver() {
 		return b.evalStatic(isMaximizing, depth)
 	}
@@ -54,7 +54,7 @@ func minimax(b board, depth int, isMaximizing bool) int {
 	return b.eval(depth, true)
 }
 
-func nextBoard(b *board) board {
+func NextBoard(b *Board) Board {
 	bestBoard, moveWeight := *b, math.MinInt
 	for _, space := range b.getOpenSpaces() {
 		possibleBoard := b.move(space, b.curPiece())

@@ -1,12 +1,12 @@
 package ttgo
 
-type line []piece
+type Line []Piece
 
-func (pieces line) isUniform() bool {
+func (pieces Line) isUniform() bool {
 	return (pieces[0] == pieces[1]) && (pieces[1] == pieces[2])
 }
 
-func (pieces line) isEmpty() bool {
+func (pieces Line) isEmpty() bool {
 	for i := range pieces {
 		if pieces[i] != blank {
 			return false

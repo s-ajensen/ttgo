@@ -1,55 +1,55 @@
 package ttgo
 
-type board [9]piece
+type Board [9]Piece
 
 const boardSize int = 3
 
-func (b *board) pieceCount(p piece) int {
+func (board *Board) pieceCount(p Piece) int {
 	count := 0
-	for i := range b {
-		if b[i] == p {
+	for i := range board {
+		if board[i] == p {
 			count++
 		}
 	}
 	return count
 }
 
-func (b *board) curPiece() piece {
-	xCount, oCount := b.pieceCount(x), b.pieceCount(o)
+func (board *Board) curPiece() Piece {
+	xCount, oCount := board.pieceCount(x), board.pieceCount(o)
 	if xCount == oCount {
 		return x
 	}
 	return o
 }
 
-func (b *board) getRows() []line {
-	return []line{
-		b[:3], b[3:6], b[6:9],
+func (board *Board) getRows() []Line {
+	return []Line{
+		board[:3], board[3:6], board[6:9],
 	}
 }
 
-func (b *board) getCols() []line {
-	cols := [3]line{}
-	for i, p := range b {
-		cols[i%boardSize] = append(cols[i%boardSize], p)
+func (board *Board) getCols() []Line {
+	cols := [3]Line{}
+	for i, piece := range board {
+		cols[i%boardSize] = append(cols[i%boardSize], piece)
 	}
 	return cols[:]
 }
 
-func (b *board) getDiags() []line {
-	diags := [2]line{}
-	for i := 0; i < len(b); i += boardSize + 1 {
-		diags[0] = append(diags[0], b[i])
+func (board *Board) getDiags() []Line {
+	diags := [2]Line{}
+	for i := 0; i < len(board); i += boardSize + 1 {
+		diags[0] = append(diags[0], board[i])
 	}
-	for i := 2; i < len(b)-1; i += boardSize - 1 {
-		diags[1] = append(diags[1], b[i])
+	for i := 2; i < len(board)-1; i += boardSize - 1 {
+		diags[1] = append(diags[1], board[i])
 	}
 	return diags[:]
 }
 
-func (b *board) isWon() bool {
-	lines := append(b.getRows(),
-		append(b.getCols(), b.getDiags()...)...)
+func (board *Board) isWon() bool {
+	lines := append(board.getRows(),
+		append(board.getCols(), board.getDiags()...)...)
 	for _, line := range lines {
 		if line.isUniform() && !line.isEmpty() {
 			return true
@@ -58,19 +58,19 @@ func (b *board) isWon() bool {
 	return false
 }
 
-func (b *board) isTied() bool {
-	isFull := b.pieceCount(x)+b.pieceCount(o) == len(b)
-	return !b.isWon() && isFull
+func (board *Board) isTied() bool {
+	isFull := board.pieceCount(x)+board.pieceCount(o) == len(board)
+	return !board.isWon() && isFull
 }
 
-func (b *board) isGameOver() bool {
-	return b.isWon() || b.isTied()
+func (board *Board) isGameOver() bool {
+	return board.isWon() || board.isTied()
 }
 
-func (b *board) getOpenSpaces() []int {
+func (board *Board) getOpenSpaces() []int {
 	spaces := make([]int, 0, 9)
-	for i, p := range b {
-		if p == blank {
+	for i, piece := range board {
+		if piece == blank {
 			spaces = append(spaces, i)
 		}
 	}
