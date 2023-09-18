@@ -24,7 +24,7 @@ func (board *Board) pieceCount(p Piece) int {
 	return count
 }
 
-func (board *Board) curPiece() Piece {
+func (board *Board) CurPiece() Piece {
 	xCount, oCount := board.pieceCount(X), board.pieceCount(O)
 	if xCount == oCount {
 		return X

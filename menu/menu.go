@@ -3,6 +3,7 @@ package menu
 import (
 	"fmt"
 	"io"
+	"strconv"
 	. "ttgo"
 )
 
@@ -20,30 +21,52 @@ type GameState struct {
 }
 
 type MenuNode struct {
-	label   string
-	options map[string]GameState
+	renderFn func(GameState) string
+	nextFn   func(GameState, string) GameState
+}
+
+func renderMenu(label string) func(state GameState) string {
+	return func(_ GameState) string {
+		return label
+	}
+}
+
+func nextMenu(options map[string]GameState) func(GameState, string) GameState {
+	return func(_ GameState, input string) GameState {
+		return options[input]
+	}
+}
+
+func playFn() func(GameState, string) GameState {
+	return func(state GameState, s string) GameState {
+		selection, _ := strconv.Atoi(s)
+		board := state.board
+		newBoard := board.Move(selection, board.CurPiece())
+		return GameState{game, newBoard}
+	}
 }
 
 var menus = map[Menu]MenuNode{
 	mainMenu: {
-		label: "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n",
-		options: map[string]GameState{
+		renderFn: renderMenu("Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n"),
+		nextFn: nextMenu(map[string]GameState{
 			"1": {menu: game},
 			"2": {menu: game, board: NextBoard(new(Board))},
-		}},
+		})},
+	game: {
+		renderFn: func(state GameState) string {
+			return state.board.String()
+		},
+		nextFn: playFn()},
 }
 
 func render(writer io.Writer, state GameState) {
-	if state.menu == game {
-		fmt.Fprintf(writer, state.board.String())
-	} else {
-		label := menus[state.menu].label
-		fmt.Fprintf(writer, label)
-	}
+	label := menus[state.menu].renderFn(state)
+	fmt.Fprintf(writer, label)
 }
 
 func nextState(writer io.Writer, state GameState, input string) GameState {
-	selection := menus[state.menu].options[input]
+	selection := menus[state.menu].nextFn(state, input)
 	if selection.menu == none {
 		fmt.Fprintf(writer, "Bad selection, try again:\n")
 		return state

@@ -38,7 +38,7 @@ func (board *Board) eval(depth int, isMaximizing bool) int {
 	eval := getBound(isMaximizing)
 	compFn := getCompFn(isMaximizing)
 	for _, space := range board.getOpenSpaces() {
-		newBoard := board.Move(space, board.curPiece())
+		newBoard := board.Move(space, board.CurPiece())
 		eval = compFn(eval, minimax(newBoard, depth+1, isMaximizing))
 	}
 	return eval
@@ -57,7 +57,7 @@ func minimax(b Board, depth int, isMaximizing bool) int {
 func NextBoard(b *Board) Board {
 	bestBoard, moveWeight := *b, math.MinInt
 	for _, space := range b.getOpenSpaces() {
-		possibleBoard := b.Move(space, b.curPiece())
+		possibleBoard := b.Move(space, b.CurPiece())
 		possibleWeight := minimax(possibleBoard, 0, true)
 		if possibleWeight > moveWeight {
 			bestBoard, moveWeight = possibleBoard, possibleWeight

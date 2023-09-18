@@ -102,20 +102,20 @@ func TestDoesNotCount_FullWin_AsTie(t *testing.T) {
 }
 
 func TestCalcsNextPiecePlayed_BlankBoard(t *testing.T) {
-	AssertEquals(t, getBlankBoard().curPiece(), X)
+	AssertEquals(t, getBlankBoard().CurPiece(), X)
 }
 
 func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
 	board := Board{X, Blank, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
-	AssertEquals(t, board.curPiece(), O)
+	AssertEquals(t, board.CurPiece(), O)
 }
 
 func TestCalcsNextPiecePlayed_ManyMovesPlayed(t *testing.T) {
 	xBoard := Board{X, O, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
 	oBoard := Board{X, O, X, Blank, Blank, Blank, Blank, Blank, Blank}
 
-	AssertEquals(t, xBoard.curPiece(), X)
-	AssertEquals(t, oBoard.curPiece(), O)
+	AssertEquals(t, xBoard.CurPiece(), X)
+	AssertEquals(t, oBoard.CurPiece(), O)
 }
 
 func TestOpenPositions_ReturnsAllIndices_BlankBoard(t *testing.T) {

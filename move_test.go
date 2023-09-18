@@ -12,7 +12,7 @@ func canLose(board Board, playingAs string) bool {
 	}
 	isLoss := false
 	for _, space := range resp.getOpenSpaces() {
-		newBoard := resp.Move(space, resp.curPiece())
+		newBoard := resp.Move(space, resp.CurPiece())
 		if newBoard.isGameOver() {
 			return playingAs != newBoard.getWinner() && "Tie" != newBoard.getWinner()
 		}
@@ -121,7 +121,7 @@ func TestAlwaysWinsO(t *testing.T) {
 	didLose := false
 	board := getBlankBoard()
 	for _, space := range board.getOpenSpaces() {
-		newBoard := board.Move(space, board.curPiece())
+		newBoard := board.Move(space, board.CurPiece())
 		didLose = didLose || canLose(newBoard, "O")
 	}
 	Assert(t, !didLose)
