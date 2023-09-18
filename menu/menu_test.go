@@ -20,7 +20,7 @@ func TestWritesPlayerOptions(t *testing.T) {
 func TestSelectsPlayAsX(t *testing.T) {
 	output.Reset()
 	expected := GameState{menu: game, board: ttgo.Board{}}
-	AssertEquals(t, expected, nextState(&output, GameState{}, "1"))
+	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "1"))
 }
 
 func TestSelectsPlayAsO(t *testing.T) {
@@ -28,14 +28,14 @@ func TestSelectsPlayAsO(t *testing.T) {
 	board := ttgo.Board{}
 	expected := GameState{menu: game, board: board.Move(0, ttgo.X)}
 
-	AssertEquals(t, expected, nextState(&output, GameState{}, "2"))
+	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "2"))
 }
 
 func TestRetriesSelectPlayAs_OnBadInput(t *testing.T) {
 	output.Reset()
 	expected := GameState{menu: mainMenu}
 
-	AssertEquals(t, expected, nextState(&output, GameState{}, "3"))
+	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "3"))
 	AssertEquals(t, "Bad selection, try again:\n", output.String())
 }
 
