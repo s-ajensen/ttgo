@@ -19,23 +19,31 @@ type GameState struct {
 	board Board
 }
 
-var menus = map[Menu]map[string]GameState{
-	mainMenu: map[string]GameState{
-		"1": GameState{menu: game},
-		"2": GameState{menu: game, board: NextBoard(new(Board))},
-	},
+type MenuNode struct {
+	label   string
+	options map[string]GameState
+}
+
+var menus = map[Menu]MenuNode{
+	mainMenu: {
+		label: "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n",
+		options: map[string]GameState{
+			"1": {menu: game},
+			"2": {menu: game, board: NextBoard(new(Board))},
+		}},
 }
 
 func render(writer io.Writer, state GameState) {
-	if state.menu == mainMenu {
-		fmt.Fprintf(writer, "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X 2) O\n")
-	} else {
+	if state.menu == game {
 		fmt.Fprintf(writer, state.board.String())
+	} else {
+		label := menus[state.menu].label
+		fmt.Fprintf(writer, label)
 	}
 }
 
 func nextState(writer io.Writer, state GameState, input string) GameState {
-	selection := menus[state.menu][input]
+	selection := menus[state.menu].options[input]
 	if selection.menu == none {
 		fmt.Fprintf(writer, "Bad selection, try again:\n")
 		return state

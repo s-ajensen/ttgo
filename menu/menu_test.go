@@ -12,7 +12,7 @@ var output bytes.Buffer
 func TestWritesPlayerOptions(t *testing.T) {
 	output.Reset()
 	render(&output, GameState{menu: mainMenu})
-	expected := "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X 2) O\n"
+	expected := "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n"
 
 	AssertEquals(t, expected, output.String())
 }
