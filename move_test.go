@@ -2,6 +2,7 @@ package ttgo
 
 import (
 	"testing"
+	. "ttgo/assert"
 )
 
 func canLose(board Board, playingAs string) bool {
@@ -11,7 +12,7 @@ func canLose(board Board, playingAs string) bool {
 	}
 	isLoss := false
 	for _, space := range resp.getOpenSpaces() {
-		newBoard := resp.move(space, resp.curPiece())
+		newBoard := resp.Move(space, resp.curPiece())
 		if newBoard.isGameOver() {
 			return playingAs != newBoard.getWinner() && "Tie" != newBoard.getWinner()
 		}
@@ -22,105 +23,106 @@ func canLose(board Board, playingAs string) bool {
 
 func TestMovePlayedOnBlankBoard(t *testing.T) {
 	var blankBoard Board
-	var playedBoard = blankBoard.move(0, x)
+	var playedBoard = blankBoard.Move(0, X)
 
-	assertEquals(t, x, playedBoard[0])
-	assertNotEquals(t, x, blankBoard[0])
+	AssertEquals(t, X, playedBoard[0])
+	AssertNotEquals(t, X, blankBoard[0])
 }
 
 func TestEvaluatesTieAsZero_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().evalStatic(true, 0))
+	AssertEquals(t, 0, getTieBoard().evalStatic(true, 0))
 }
 
 func TestEvaluatesTieAsZero_WhenMinimizing(t *testing.T) {
-	assertEquals(t, 0, getTieBoard().evalStatic(false, 0))
+	AssertEquals(t, 0, getTieBoard().evalStatic(false, 0))
 }
 
 func TestEvaluatesWinAsTen_WhenMaximizing(t *testing.T) {
-	assertEquals(t, 10, getWinBoard().evalStatic(true, 0))
+	AssertEquals(t, 10, getWinBoard().evalStatic(true, 0))
 }
 
 func TestEvaluatesWinAsMinusTen_WhenMinimizing(t *testing.T) {
-	assertEquals(t, -10, getWinBoard().evalStatic(false, 0))
+	AssertEquals(t, -10, getWinBoard().evalStatic(false, 0))
 }
 
 func TestMinimaxReturnsStaticEval_WhenGameOver(t *testing.T) {
-	assertEquals(t, 0, minimax(*getTieBoard(), 0, true))
-	assertEquals(t, 10, minimax(*getWinBoard(), 0, true))
-	assertEquals(t, -10, minimax(*getWinBoard(), 0, false))
+	AssertEquals(t, 0, minimax(*getTieBoard(), 0, true))
+	AssertEquals(t, 10, minimax(*getWinBoard(), 0, true))
+	AssertEquals(t, -10, minimax(*getWinBoard(), 0, false))
 }
 
 func TestMinimaxPrefersWin_ToTie(t *testing.T) {
-	board := Board{x, o, x, x, o, x, o, blank, blank}
-	winMove := board.move(7, o)
-	tieMove := board.move(8, o)
+	board := Board{X, O, X, X, O, X, O, Blank, Blank}
+	winMove := board.Move(7, O)
+	tieMove := board.Move(8, O)
 
-	assert(t, minimax(winMove, 0, true) > minimax(tieMove, 0, true))
+	Assert(t, minimax(winMove, 0, true) > minimax(tieMove, 0, true))
 }
 
 func TestMinimaxIdentifies_PlayerWin(t *testing.T) {
-	board := Board{x, o, x, x, o, x, o, blank, blank}
-	playerWinMove := board.move(7, o)
-	playerTieMove := board.move(8, o)
+	board := Board{X, O, X, X, O, X, O, Blank, Blank}
+	playerWinMove := board.Move(7, O)
+	playerTieMove := board.Move(8, O)
 
-	assert(t, minimax(playerWinMove, 0, false) < minimax(playerTieMove, 0, false))
+	Assert(t, minimax(playerWinMove, 0, false) < minimax(playerTieMove, 0, false))
 }
 
 func TestMinimaxPrefersTie_ToPlayerWin(t *testing.T) {
-	board := Board{x, o, blank, x, x, blank, o, x, o}
-	blockMove := board.move(5, o)
-	loseMove := board.move(2, o)
+	board := Board{X, O, Blank, X, X, Blank, O, X, O}
+	blockMove := board.Move(5, O)
+	loseMove := board.Move(2, O)
 
-	assert(t, minimax(blockMove, 0, true) > minimax(loseMove, 0, true))
+	Assert(t, minimax(blockMove, 0, true) > minimax(loseMove, 0, true))
 }
 
 func TestMinimaxPrefersFastWin_ToSlow(t *testing.T) {
-	board := Board{x, o, o, blank, blank, o, blank, x, x}
-	expected := board.move(4, x)
+	board := Board{X, O, O, Blank, Blank, O, Blank, X, X}
+	expected := board.Move(4, X)
 
-	assertSliceEquals(t, expected, NextBoard(&board))
+	AssertSliceEquals(t, expected, NextBoard(&board))
 }
 
 func TestMakesMove_EmptyBoard(t *testing.T) {
-	assert(t, !NextBoard(getBlankBoard()).isEmpty())
+	board := NextBoard(getBlankBoard())
+	Assert(t, !(&board).isEmpty())
 }
 
 func TestMakesMove_PopulatedBoard(t *testing.T) {
-	board := getBlankBoard().move(2, x)
+	board := getBlankBoard().Move(2, X)
 	board = NextBoard(&board)
 
-	assertEquals(t, 7, len(board.getOpenSpaces()))
+	AssertEquals(t, 7, len(board.getOpenSpaces()))
 }
 
 func TestNextBoard_TakesCornerFirstMove(t *testing.T) {
-	expected := getBlankBoard().move(0, x)
-	assertSliceEquals(t, expected, NextBoard(getBlankBoard()))
+	expected := getBlankBoard().Move(0, X)
+	AssertSliceEquals(t, expected, NextBoard(getBlankBoard()))
 }
 
 func TestBlocksPlayerWin(t *testing.T) {
-	board := Board{x, o, x, blank, blank, blank, blank, o, blank}
-	expected := board.move(4, x)
+	board := Board{X, O, X, Blank, Blank, Blank, Blank, O, Blank}
+	expected := board.Move(4, X)
 
-	assertSliceEquals(t, expected, NextBoard(&board))
+	AssertSliceEquals(t, expected, NextBoard(&board))
 }
 
 func TestNextBoard_BlocksCornerStrategy(t *testing.T) {
-	board := getBlankBoard().move(0, x)
-	expected := board.move(4, o)
+	board := getBlankBoard().Move(0, X)
+	expected := board.Move(4, O)
 
-	assertSliceEquals(t, expected, NextBoard(&board))
+	AssertSliceEquals(t, expected, NextBoard(&board))
 }
 
 func TestAlwaysWinsX(t *testing.T) {
-	assert(t, !canLose(*getBlankBoard(), "X"))
+	Assert(t, !canLose(*getBlankBoard(), "X"))
 }
 
 func TestAlwaysWinsO(t *testing.T) {
 	didLose := false
 	board := getBlankBoard()
 	for _, space := range board.getOpenSpaces() {
-		newBoard := board.move(space, board.curPiece())
+		newBoard := board.Move(space, board.curPiece())
 		didLose = didLose || canLose(newBoard, "O")
 	}
-	assert(t, !didLose)
+	Assert(t, !didLose)
 }

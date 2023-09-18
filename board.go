@@ -4,6 +4,16 @@ type Board [9]Piece
 
 const boardSize int = 3
 
+func (board *Board) String() string {
+	var boardStr string
+	for i := 0; i < len(board); i += boardSize {
+		pieces := make(Line, boardSize)
+		pieces = board[i:(i + boardSize)]
+		boardStr = boardStr + pieces.String() + "\n"
+	}
+	return boardStr
+}
+
 func (board *Board) pieceCount(p Piece) int {
 	count := 0
 	for i := range board {
@@ -15,11 +25,11 @@ func (board *Board) pieceCount(p Piece) int {
 }
 
 func (board *Board) curPiece() Piece {
-	xCount, oCount := board.pieceCount(x), board.pieceCount(o)
+	xCount, oCount := board.pieceCount(X), board.pieceCount(O)
 	if xCount == oCount {
-		return x
+		return X
 	}
-	return o
+	return O
 }
 
 func (board *Board) getRows() []Line {
@@ -59,7 +69,7 @@ func (board *Board) isWon() bool {
 }
 
 func (board *Board) isTied() bool {
-	isFull := board.pieceCount(x)+board.pieceCount(o) == len(board)
+	isFull := board.pieceCount(X)+board.pieceCount(O) == len(board)
 	return !board.isWon() && isFull
 }
 
@@ -70,7 +80,7 @@ func (board *Board) isGameOver() bool {
 func (board *Board) getOpenSpaces() []int {
 	spaces := make([]int, 0, 9)
 	for i, piece := range board {
-		if piece == blank {
+		if piece == Blank {
 			spaces = append(spaces, i)
 		}
 	}

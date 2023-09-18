@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func (board Board) move(i int, p Piece) Board {
+func (board Board) Move(i int, p Piece) Board {
 	board[i] = p
 	return board
 }
@@ -38,7 +38,7 @@ func (board *Board) eval(depth int, isMaximizing bool) int {
 	eval := getBound(isMaximizing)
 	compFn := getCompFn(isMaximizing)
 	for _, space := range board.getOpenSpaces() {
-		newBoard := board.move(space, board.curPiece())
+		newBoard := board.Move(space, board.curPiece())
 		eval = compFn(eval, minimax(newBoard, depth+1, isMaximizing))
 	}
 	return eval
@@ -57,7 +57,7 @@ func minimax(b Board, depth int, isMaximizing bool) int {
 func NextBoard(b *Board) Board {
 	bestBoard, moveWeight := *b, math.MinInt
 	for _, space := range b.getOpenSpaces() {
-		possibleBoard := b.move(space, b.curPiece())
+		possibleBoard := b.Move(space, b.curPiece())
 		possibleWeight := minimax(possibleBoard, 0, true)
 		if possibleWeight > moveWeight {
 			bestBoard, moveWeight = possibleBoard, possibleWeight

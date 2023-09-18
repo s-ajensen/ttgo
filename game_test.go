@@ -1,8 +1,11 @@
 package ttgo
 
-import "testing"
+import (
+	"testing"
+	. "ttgo/assert"
+)
 
-func (board Board) isEmpty() bool {
+func (board *Board) isEmpty() bool {
 	for _, c := range board {
 		if c != 0 {
 			return false
@@ -13,39 +16,39 @@ func (board Board) isEmpty() bool {
 
 func TestInitializesBoardOfSizeNine(t *testing.T) {
 	var b Board
-	assertEquals(t, 9, len(b))
+	AssertEquals(t, 9, len(b))
 }
 
 func TestInitializesBoardBlank(t *testing.T) {
-	var b Board
-	assert(t, b.isEmpty())
+	board := new(Board)
+	Assert(t, board.isEmpty())
 }
 
 func TestTokensAssigned(t *testing.T) {
-	assertEquals(t, Piece(0), blank)
-	assertEquals(t, Piece(1), x)
-	assertEquals(t, Piece(2), o)
+	AssertEquals(t, Piece(0), Blank)
+	AssertEquals(t, Piece(1), X)
+	AssertEquals(t, Piece(2), O)
 }
 
 func TestWinnerReturnsX(t *testing.T) {
-	assertEquals(t, "X", getWinBoard().getWinner())
+	AssertEquals(t, "X", getWinBoard().getWinner())
 }
 
 func TestWinnerReturnsO(t *testing.T) {
-	oWinBoard := Board{o, o, o, x, x, blank, x, blank, blank}
-	assertEquals(t, "O", oWinBoard.getWinner())
+	oWinBoard := Board{O, O, O, X, X, Blank, X, Blank, Blank}
+	AssertEquals(t, "O", oWinBoard.getWinner())
 }
 
 func TestWinnerReturnsTie(t *testing.T) {
-	assertEquals(t, "Tie", getTieBoard().getWinner())
+	AssertEquals(t, "Tie", getTieBoard().getWinner())
 }
 
 func TestWinnerReturnsPanicsForUnfinishedGame(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
-			assert(t, true)
+			Assert(t, true)
 		}
 	}()
 	getBlankBoard().getWinner()
-	assert(t, false)
+	Assert(t, false)
 }

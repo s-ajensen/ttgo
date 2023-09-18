@@ -1,6 +1,9 @@
 package ttgo
 
-import "testing"
+import (
+	"testing"
+	. "ttgo/assert"
+)
 
 func getBlankBoard() *Board {
 	var board Board
@@ -8,116 +11,133 @@ func getBlankBoard() *Board {
 }
 
 func getTestBoard() *Board {
-	return &Board{x, blank, blank, o, blank, blank, blank, x, o}
+	return &Board{X, Blank, Blank, O, Blank, Blank, Blank, X, O}
 }
 
 func getTieBoard() *Board {
-	return &Board{x, o, x, x, o, x, o, x, o}
+	return &Board{X, O, X, X, O, X, O, X, O}
 }
 
 func getWinBoard() *Board {
-	return &Board{x, x, x, o, o, x, o, o, x}
+	return &Board{X, X, X, O, O, X, O, O, X}
+}
+
+func TestStringsEmptyBoard(t *testing.T) {
+	boardStr := getBlankBoard().String()
+	AssertEquals(t, "- - -\n- - -\n- - -\n", boardStr)
+}
+
+func TestStringsBoardWithSingleMove(t *testing.T) {
+	board := getBlankBoard().Move(0, X)
+	boardStr := (&board).String()
+
+	AssertEquals(t, "X - -\n- - -\n- - -\n", boardStr)
+}
+
+func TestStringsBoardWithManyMoves(t *testing.T) {
+	boardStr := getTestBoard().String()
+	AssertEquals(t, "X - -\nO - -\n- X O\n", boardStr)
 }
 
 func TestIdentifiesRows(t *testing.T) {
 	rows := getTestBoard().getRows()
 
-	assertSliceEquals(t, Line{x, blank, blank}, rows[0])
-	assertSliceEquals(t, Line{o, blank, blank}, rows[1])
-	assertSliceEquals(t, Line{blank, x, o}, rows[2])
+	AssertSliceEquals(t, Line{X, Blank, Blank}, rows[0])
+	AssertSliceEquals(t, Line{O, Blank, Blank}, rows[1])
+	AssertSliceEquals(t, Line{Blank, X, O}, rows[2])
 }
 
 func TestIdentifiesCols(t *testing.T) {
 	cols := getTestBoard().getCols()
 
-	assertSliceEquals(t, Line{x, o, blank}, cols[0])
-	assertSliceEquals(t, Line{blank, blank, x}, cols[1])
-	assertSliceEquals(t, Line{blank, blank, o}, cols[2])
+	AssertSliceEquals(t, Line{X, O, Blank}, cols[0])
+	AssertSliceEquals(t, Line{Blank, Blank, X}, cols[1])
+	AssertSliceEquals(t, Line{Blank, Blank, O}, cols[2])
 }
 
 func TestIdentifiesDiags(t *testing.T) {
 	diags := getTestBoard().getDiags()
 
-	assertSliceEquals(t, Line{x, blank, o}, diags[0])
-	assertSliceEquals(t, Line{blank, blank, blank}, diags[1])
+	AssertSliceEquals(t, Line{X, Blank, O}, diags[0])
+	AssertSliceEquals(t, Line{Blank, Blank, Blank}, diags[1])
 }
 
 func TestDeterminesWinByRow(t *testing.T) {
 	var unfinishedBoard Board
-	winBoard := Board{x, x, x, blank, o, o, o, blank, blank}
+	winBoard := Board{X, X, X, Blank, O, O, O, Blank, Blank}
 
-	assert(t, !unfinishedBoard.isWon())
-	assert(t, winBoard.isWon())
+	Assert(t, !unfinishedBoard.isWon())
+	Assert(t, winBoard.isWon())
 }
 
 func TestDeterminesWinByColumn(t *testing.T) {
-	winBoard := Board{x, o, o, x, blank, blank, x, blank, blank}
-	assert(t, winBoard.isWon())
+	winBoard := Board{X, O, O, X, Blank, Blank, X, Blank, Blank}
+	Assert(t, winBoard.isWon())
 }
 
 func TestDeterminesWinByDiags(t *testing.T) {
-	winBoardX := Board{x, o, o, blank, x, blank, blank, blank, x}
-	winBoardO := Board{x, x, o, x, o, blank, o, blank, blank}
+	winBoardX := Board{X, O, O, Blank, X, Blank, Blank, Blank, X}
+	winBoardO := Board{X, X, O, X, O, Blank, O, Blank, Blank}
 
-	assert(t, winBoardX.isWon())
-	assert(t, winBoardO.isWon())
+	Assert(t, winBoardX.isWon())
+	Assert(t, winBoardO.isWon())
 }
 
 func TestDoesNotCount_NewGame_AsTie(t *testing.T) {
-	assert(t, !getBlankBoard().isTied())
+	Assert(t, !getBlankBoard().isTied())
 }
 
 func TestDoesNotCount_UnfinishedGame_AsTie(t *testing.T) {
-	board := Board{x, blank, blank, blank, blank, blank, blank, blank, blank}
-	assert(t, !board.isTied())
+	board := Board{X, Blank, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
+	Assert(t, !board.isTied())
 }
 
 func TestDeterminesTie(t *testing.T) {
-	assert(t, getTieBoard().isTied())
+	Assert(t, getTieBoard().isTied())
 }
 
 func TestDoesNotCount_FullWin_AsTie(t *testing.T) {
-	board := Board{x, o, x, o, x, o, x, o, x}
-	assert(t, !board.isTied())
+	board := Board{X, O, X, O, X, O, X, O, X}
+	Assert(t, !board.isTied())
 }
 
 func TestCalcsNextPiecePlayed_BlankBoard(t *testing.T) {
-	assertEquals(t, getBlankBoard().curPiece(), x)
+	AssertEquals(t, getBlankBoard().curPiece(), X)
 }
 
 func TestCalcsNextPiecePlayed_SingleMovePlayed(t *testing.T) {
-	board := Board{x, blank, blank, blank, blank, blank, blank, blank, blank}
-	assertEquals(t, board.curPiece(), o)
+	board := Board{X, Blank, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
+	AssertEquals(t, board.curPiece(), O)
 }
 
 func TestCalcsNextPiecePlayed_ManyMovesPlayed(t *testing.T) {
-	xBoard := Board{x, o, blank, blank, blank, blank, blank, blank, blank}
-	oBoard := Board{x, o, x, blank, blank, blank, blank, blank, blank}
+	xBoard := Board{X, O, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
+	oBoard := Board{X, O, X, Blank, Blank, Blank, Blank, Blank, Blank}
 
-	assertEquals(t, xBoard.curPiece(), x)
-	assertEquals(t, oBoard.curPiece(), o)
+	AssertEquals(t, xBoard.curPiece(), X)
+	AssertEquals(t, oBoard.curPiece(), O)
 }
 
 func TestOpenPositions_ReturnsAllIndices_BlankBoard(t *testing.T) {
 	expected := []int{0, 1, 2, 3, 4, 5, 6, 7, 8}
-	assertSliceEquals(t, expected, getBlankBoard().getOpenSpaces())
+	AssertSliceEquals(t, expected, getBlankBoard().getOpenSpaces())
 }
 
 func TestOpenPositiong_ReturnsEmptyArray_FullBoard(t *testing.T) {
 	expected := []int{}
-	assertSliceEquals(t, expected, getTieBoard().getOpenSpaces())
+	AssertSliceEquals(t, expected, getTieBoard().getOpenSpaces())
 }
 
 func TestOpenPositions_ReturnsOpen_WithSingleMove(t *testing.T) {
-	board := Board{x, blank, blank, blank, blank, blank, blank, blank, blank}
+	board := Board{X, Blank, Blank, Blank, Blank, Blank, Blank, Blank, Blank}
 	expected := []int{1, 2, 3, 4, 5, 6, 7, 8}
 
-	assertSliceEquals(t, expected, board.getOpenSpaces())
+	AssertSliceEquals(t, expected, board.getOpenSpaces())
 }
 
 func TestOpenPositiong_ReturnsOpen_WithManyMoves(t *testing.T) {
-	board := Board{x, o, x, blank, x, blank, blank, blank, o}
+	board := Board{X, O, X, Blank, X, Blank, Blank, Blank, O}
 	expected := []int{3, 5, 6, 7}
 
-	assertSliceEquals(t, expected, board.getOpenSpaces())
+	AssertSliceEquals(t, expected, board.getOpenSpaces())
 }

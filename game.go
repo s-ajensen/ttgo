@@ -3,9 +3,9 @@ package ttgo
 type Piece byte
 
 const (
-	blank = Piece(0)
-	x     = Piece(1)
-	o     = Piece(2)
+	Blank = Piece(0)
+	X     = Piece(1)
+	O     = Piece(2)
 )
 
 func (board *Board) getWinner() string {
@@ -15,7 +15,7 @@ func (board *Board) getWinner() string {
 	if board.isTied() {
 		return "Tie"
 	}
-	xCount, oCount := board.pieceCount(x), board.pieceCount(o)
+	xCount, oCount := board.pieceCount(X), board.pieceCount(O)
 	if xCount == oCount {
 		return "O"
 	}
