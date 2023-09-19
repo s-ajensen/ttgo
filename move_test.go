@@ -30,7 +30,14 @@ func TestMovePlayedOnBlankBoard(t *testing.T) {
 }
 
 func TestReturnsError_ForMoveOutOfRange(t *testing.T) {
+	var board Board
+	nextBoardTooSmall, tooSmallErr := board.Move(-1, X)
+	nextBoardTooBig, tooBigErr := board.Move(10, X)
 
+	AssertEquals(t, inputErr, tooSmallErr)
+	AssertEquals(t, board, nextBoardTooSmall)
+	AssertEquals(t, inputErr, tooBigErr)
+	AssertEquals(t, board, nextBoardTooBig)
 }
 
 func TestEvaluatesTieAsZero_WhenMaximizing(t *testing.T) {

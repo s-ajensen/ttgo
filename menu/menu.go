@@ -28,6 +28,5 @@ var mainMenu = Menu{
 	"Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n",
 	map[string]Stringer{
 		"1": ttgo.Board{},
-		"2": ttgo.Board{0: ttgo.X},
-		//"2": ttgo.NextBoard(new(ttgo.Board)),
+		"2": ttgo.NextBoard(new(ttgo.Board)),
 	}}
