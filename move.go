@@ -5,18 +5,18 @@ import (
 )
 
 func validateMove(move int) (int, error) {
-	if move < 0 || move > boardSize {
+	if move < 0 || move > len(Board{}) {
 		return move, inputErr
 	}
 	return move, nil
 }
 
 func (board Board) Move(i int, p Piece) (Board, error) {
-	space, err := validateMove(i)
+	_, err := validateMove(i)
 	if err != nil {
 		return board, err
 	}
-	board[space] = p
+	board[i] = p
 	return board, nil
 }
 
