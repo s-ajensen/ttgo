@@ -141,3 +141,40 @@ func TestOpenPositiong_ReturnsOpen_WithManyMoves(t *testing.T) {
 
 	AssertSliceEquals(t, expected, board.getOpenSpaces())
 }
+
+func TestPlaysMove(t *testing.T) {
+	var board Board
+	expected := board.Move(0, X)
+
+	nextBoard, err := board.NextState("0")
+	AssertEquals(t, expected, nextBoard)
+	AssertEquals(t, nil, err)
+}
+
+func TestReturnsErrorForEmptyInput(t *testing.T) {
+	var board Board
+
+	nextBoardEmpty, emptyErr := board.NextState("")
+
+	AssertEquals(t, inputErr, emptyErr)
+	AssertEquals(t, board, nextBoardEmpty)
+}
+
+func TestReturnsErrorFor_NonIntegerInput(t *testing.T) {
+	var board Board
+	next, err := board.NextState("not an index")
+
+	AssertEquals(t, inputErr, err)
+	AssertEquals(t, board, next)
+}
+
+func TestReturnsErrorFor_OutOfBoundsInput(t *testing.T) {
+	var board Board
+	nextBoardTooBig, tooBigErr := board.NextState("10")
+	nextBoardTooSmall, tooSmallErr := board.NextState("-1")
+
+	AssertEquals(t, inputErr, tooBigErr)
+	AssertEquals(t, board, nextBoardTooBig)
+	AssertEquals(t, inputErr, tooSmallErr)
+	AssertEquals(t, board, nextBoardTooSmall)
+}

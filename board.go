@@ -1,10 +1,16 @@
 package ttgo
 
+import (
+	"errors"
+	. "fmt"
+	"strconv"
+)
+
 type Board [9]Piece
 
 const boardSize int = 3
 
-func (board *Board) String() string {
+func (board Board) String() string {
 	var boardStr string
 	for i := 0; i < len(board); i += boardSize {
 		pieces := make(Line, boardSize)
@@ -12,6 +18,17 @@ func (board *Board) String() string {
 		boardStr = boardStr + pieces.String() + "\n"
 	}
 	return boardStr
+}
+
+var inputErr = errors.New(Sprintf("Invalid move!\nEnter an integer between 0 and %d.", boardSize))
+
+// TODO: Need to account for double placing move
+func (board Board) NextState(selection string) (Stringer, error) {
+	move, err := strconv.Atoi(selection)
+	if err != nil {
+		return board, inputErr
+	}
+	return board.Move(move, board.CurPiece()), nil
 }
 
 func (board *Board) pieceCount(p Piece) int {

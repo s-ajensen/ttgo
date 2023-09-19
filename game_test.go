@@ -43,7 +43,7 @@ func TestWinnerReturnsTie(t *testing.T) {
 	AssertEquals(t, "Tie", getTieBoard().getWinner())
 }
 
-func TestWinnerReturnsPanicsForUnfinishedGame(t *testing.T) {
+func TestWinnerPanicsForUnfinishedGame(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
 			Assert(t, true)

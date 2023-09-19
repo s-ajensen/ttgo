@@ -1,57 +1,39 @@
 package menu
 
 import (
-	"bytes"
+	"errors"
 	"testing"
 	"ttgo"
 	. "ttgo/assert"
 )
 
-var output bytes.Buffer
-
-func TestWritesPlayerOptions(t *testing.T) {
-	output.Reset()
-	render(&output, GameState{menu: mainMenu})
+func TestRendersPlayerOptions(t *testing.T) {
 	expected := "Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n"
 
-	AssertEquals(t, expected, output.String())
+	AssertEquals(t, expected, mainMenu.String())
 }
 
 func TestSelectsPlayAsX(t *testing.T) {
-	output.Reset()
-	expected := GameState{menu: game, board: ttgo.Board{}}
-	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "1"))
+	expected := ttgo.Board{}
+
+	next, err := mainMenu.NextState("1")
+	AssertEquals(t, expected, next)
+	AssertEquals(t, nil, err)
 }
 
 func TestSelectsPlayAsO(t *testing.T) {
-	output.Reset()
 	var board ttgo.Board
-	expected := GameState{menu: game, board: board.Move(0, ttgo.X)}
+	expected := ttgo.NextBoard(&board)
 
-	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "2"))
+	next, err := mainMenu.NextState("2")
+	AssertEquals(t, expected, next)
+	AssertEquals(t, nil, err)
 }
 
-func TestRetriesSelectPlayAs_OnBadInput(t *testing.T) {
-	output.Reset()
-	expected := GameState{menu: mainMenu}
+func TestReturnsErrorFor_UnknownOption(t *testing.T) {
+	next, err := mainMenu.NextState("3")
+	expectedErr := errors.New("Invalid option '3'\nTry again:\n")
 
-	AssertEquals(t, expected, nextState(&output, GameState{menu: mainMenu}, "3"))
-	AssertEquals(t, "Bad selection, try again:\n", output.String())
-}
-
-func TestWritesBoard(t *testing.T) {
-	output.Reset()
-	var board ttgo.Board
-	render(&output, GameState{menu: game, board: board})
-	expected := board.String()
-
-	AssertEquals(t, expected, output.String())
-}
-
-func TestPlaysMove(t *testing.T) {
-	output.Reset()
-	var board ttgo.Board
-	expected := GameState{menu: game, board: board.Move(0, ttgo.X)}
-
-	AssertEquals(t, expected, nextState(&output, GameState{game, board}, "0"))
+	AssertDeepEquals(t, mainMenu, next)
+	AssertEquals(t, expectedErr.Error(), err)
 }
