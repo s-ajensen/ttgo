@@ -28,7 +28,7 @@ func TestStringsEmptyBoard(t *testing.T) {
 }
 
 func TestStringsBoardWithSingleMove(t *testing.T) {
-	board := getBlankBoard().Move(0, X)
+	board, _ := getBlankBoard().Move(0, X)
 	boardStr := (&board).String()
 
 	AssertEquals(t, "X - -\n- - -\n- - -\n", boardStr)
@@ -144,7 +144,7 @@ func TestOpenPositiong_ReturnsOpen_WithManyMoves(t *testing.T) {
 
 func TestPlaysMove(t *testing.T) {
 	var board Board
-	expected := board.Move(0, X)
+	expected, _ := board.Move(0, X)
 
 	nextBoard, err := board.NextState("0")
 	AssertEquals(t, expected, nextBoard)

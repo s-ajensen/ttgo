@@ -20,15 +20,20 @@ func (board Board) String() string {
 	return boardStr
 }
 
+// TODO: Move to own file?
 var inputErr = errors.New(Sprintf("Invalid move!\nEnter an integer between 0 and %d.", boardSize))
 
 // TODO: Need to account for double placing move
 func (board Board) NextState(selection string) (Stringer, error) {
-	move, err := strconv.Atoi(selection)
-	if err != nil {
+	space, parseErr := strconv.Atoi(selection)
+	if parseErr != nil {
 		return board, inputErr
 	}
-	return board.Move(move, board.CurPiece()), nil
+	move, moveErr := board.Move(space, board.CurPiece())
+	if moveErr != nil {
+		return board, moveErr
+	}
+	return move, nil
 }
 
 func (board *Board) pieceCount(p Piece) int {

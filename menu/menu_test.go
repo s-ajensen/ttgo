@@ -35,5 +35,5 @@ func TestReturnsErrorFor_UnknownOption(t *testing.T) {
 	expectedErr := errors.New("Invalid option '3'\nTry again:\n")
 
 	AssertDeepEquals(t, mainMenu, next)
-	AssertEquals(t, expectedErr.Error(), err)
+	AssertEquals(t, expectedErr.Error(), err.Error())
 }
