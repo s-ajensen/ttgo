@@ -27,11 +27,3 @@ func TestSelectsPlayAsO(t *testing.T) {
 	AssertEquals(t, expected, next)
 	AssertEquals(t, nil, err)
 }
-
-func TestReturnsErrorFor_UnknownOption(t *testing.T) {
-	next, err := mainMenu.NextState("3")
-	expectedErr := newInvalidOptionErr("3")
-
-	AssertDeepEquals(t, mainMenu, next)
-	AssertEquals(t, expectedErr.Error(), err.Error())
-}

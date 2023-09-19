@@ -52,3 +52,55 @@ func TestWinnerPanicsForUnfinishedGame(t *testing.T) {
 	getBlankBoard().getWinner()
 	Assert(t, false)
 }
+
+func TestNextStatePlaysMove(t *testing.T) {
+	var board Board
+	expected, _ := board.Move(0, X)
+
+	nextBoard, err := board.NextState("0")
+	AssertEquals(t, expected, nextBoard)
+	AssertEquals(t, nil, err)
+}
+
+func TestNextStateReturnsErrorForEmptyInput(t *testing.T) {
+	var board Board
+
+	nextBoardEmpty, emptyErr := board.NextState("")
+
+	AssertEquals(t, newInputErr().Error(), emptyErr.Error())
+	AssertEquals(t, board, nextBoardEmpty)
+}
+
+func TestNextStateReturnsErrorFor_NonIntegerInput(t *testing.T) {
+	var board Board
+	next, err := board.NextState("not an index")
+
+	AssertEquals(t, newInputErr().Error(), err.Error())
+	AssertEquals(t, board, next)
+}
+
+func TestNextStateReturnsErrorFor_OutOfBoundsInput(t *testing.T) {
+	var board Board
+	nextBoardTooBig, tooBigErr := board.NextState("10")
+	nextBoardTooSmall, tooSmallErr := board.NextState("-1")
+
+	AssertEquals(t, newInputErr().Error(), tooBigErr.Error())
+	AssertEquals(t, board, nextBoardTooBig)
+	AssertEquals(t, newInputErr().Error(), tooSmallErr.Error())
+	AssertEquals(t, board, nextBoardTooSmall)
+}
+
+func TestNextStateReturns_ReplayMenu_ForFinishedGame(t *testing.T) {
+	board := Board{X, X, Blank, O, Blank, O, Blank, Blank, Blank}
+	nextState, _ := board.NextState("2")
+
+	AssertDeepEquals(t, replayMenu, nextState)
+}
+
+func TestReturnsErrorFor_UnknownOption(t *testing.T) {
+	next, err := mainMenu.NextState("3")
+	expectedErr := newInvalidOptionErr("3")
+
+	AssertDeepEquals(t, mainMenu, next)
+	AssertEquals(t, expectedErr.Error(), err.Error())
+}
