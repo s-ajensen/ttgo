@@ -1,9 +1,7 @@
-package menu
+package ttgo
 
 import (
-	"errors"
 	"testing"
-	"ttgo"
 	. "ttgo/assert"
 )
 
@@ -14,7 +12,7 @@ func TestRendersPlayerOptions(t *testing.T) {
 }
 
 func TestSelectsPlayAsX(t *testing.T) {
-	expected := ttgo.Board{}
+	expected := Board{}
 
 	next, err := mainMenu.NextState("1")
 	AssertEquals(t, expected, next)
@@ -22,8 +20,8 @@ func TestSelectsPlayAsX(t *testing.T) {
 }
 
 func TestSelectsPlayAsO(t *testing.T) {
-	var board ttgo.Board
-	expected := ttgo.NextBoard(&board)
+	var board Board
+	expected := NextBoard(&board)
 
 	next, err := mainMenu.NextState("2")
 	AssertEquals(t, expected, next)
@@ -32,7 +30,7 @@ func TestSelectsPlayAsO(t *testing.T) {
 
 func TestReturnsErrorFor_UnknownOption(t *testing.T) {
 	next, err := mainMenu.NextState("3")
-	expectedErr := errors.New("invalid option '3'\nTry again:\n")
+	expectedErr := newInvalidOptionErr("3")
 
 	AssertDeepEquals(t, mainMenu, next)
 	AssertEquals(t, expectedErr.Error(), err.Error())

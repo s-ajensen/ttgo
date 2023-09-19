@@ -123,7 +123,7 @@ func TestOpenPositions_ReturnsAllIndices_BlankBoard(t *testing.T) {
 	AssertSliceEquals(t, expected, getBlankBoard().getOpenSpaces())
 }
 
-func TestOpenPositiong_ReturnsEmptyArray_FullBoard(t *testing.T) {
+func TestOpenPositions_ReturnsEmptyArray_FullBoard(t *testing.T) {
 	expected := []int{}
 	AssertSliceEquals(t, expected, getTieBoard().getOpenSpaces())
 }
@@ -135,14 +135,14 @@ func TestOpenPositions_ReturnsOpen_WithSingleMove(t *testing.T) {
 	AssertSliceEquals(t, expected, board.getOpenSpaces())
 }
 
-func TestOpenPositiong_ReturnsOpen_WithManyMoves(t *testing.T) {
+func TestOpenPositions_ReturnsOpen_WithManyMoves(t *testing.T) {
 	board := Board{X, O, X, Blank, X, Blank, Blank, Blank, O}
 	expected := []int{3, 5, 6, 7}
 
 	AssertSliceEquals(t, expected, board.getOpenSpaces())
 }
 
-func TestPlaysMove(t *testing.T) {
+func TestNextStatePlaysMove(t *testing.T) {
 	var board Board
 	expected, _ := board.Move(0, X)
 
@@ -151,30 +151,37 @@ func TestPlaysMove(t *testing.T) {
 	AssertEquals(t, nil, err)
 }
 
-func TestReturnsErrorForEmptyInput(t *testing.T) {
+func TestNextStateReturnsErrorForEmptyInput(t *testing.T) {
 	var board Board
 
 	nextBoardEmpty, emptyErr := board.NextState("")
 
-	AssertEquals(t, inputErr, emptyErr)
+	AssertEquals(t, newInputErr().Error(), emptyErr.Error())
 	AssertEquals(t, board, nextBoardEmpty)
 }
 
-func TestReturnsErrorFor_NonIntegerInput(t *testing.T) {
+func TestNextStateReturnsErrorFor_NonIntegerInput(t *testing.T) {
 	var board Board
 	next, err := board.NextState("not an index")
 
-	AssertEquals(t, inputErr, err)
+	AssertEquals(t, newInputErr().Error(), err.Error())
 	AssertEquals(t, board, next)
 }
 
-func TestReturnsErrorFor_OutOfBoundsInput(t *testing.T) {
+func TestNextStateReturnsErrorFor_OutOfBoundsInput(t *testing.T) {
 	var board Board
 	nextBoardTooBig, tooBigErr := board.NextState("10")
 	nextBoardTooSmall, tooSmallErr := board.NextState("-1")
 
-	AssertEquals(t, inputErr, tooBigErr)
+	AssertEquals(t, newInputErr().Error(), tooBigErr.Error())
 	AssertEquals(t, board, nextBoardTooBig)
-	AssertEquals(t, inputErr, tooSmallErr)
+	AssertEquals(t, newInputErr().Error(), tooSmallErr.Error())
 	AssertEquals(t, board, nextBoardTooSmall)
+}
+
+func TestNextStateReturns_ReplayMenu_ForFinishedGame(t *testing.T) {
+	board := Board{X, X, Blank, O, Blank, O, Blank, Blank, Blank}
+	nextState, _ := board.NextState("2")
+
+	AssertDeepEquals(t, replayMenu, nextState)
 }

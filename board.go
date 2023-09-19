@@ -1,11 +1,5 @@
 package ttgo
 
-import (
-	"errors"
-	. "fmt"
-	"strconv"
-)
-
 type Board [9]Piece
 
 const boardSize int = 3
@@ -18,21 +12,6 @@ func (board Board) String() string {
 		boardStr = boardStr + pieces.String() + "\n"
 	}
 	return boardStr
-}
-
-// TODO: Move to own file?
-var inputErr = errors.New(Sprintf("Invalid move!\nEnter an integer between 0 and %d.", boardSize))
-
-func (board Board) NextState(selection string) (Stringer, error) {
-	space, parseErr := strconv.Atoi(selection)
-	if parseErr != nil {
-		return board, inputErr
-	}
-	move, moveErr := board.Move(space, board.CurPiece())
-	if moveErr != nil {
-		return board, moveErr
-	}
-	return move, nil
 }
 
 func (board *Board) pieceCount(p Piece) int {

@@ -1,18 +1,16 @@
 package ttgo
 
 import (
-	"errors"
-	"fmt"
 	"math"
 )
 
 func (board *Board) validateMove(move int) (int, error) {
 	if move < 0 || move > len(Board{}) {
-		return move, inputErr
+		return move, newInputErr()
 	}
 	if board[move] != Blank {
-		spaceTakenErr := errors.New(fmt.Sprintf("space at index '%d' already taken", move))
-		return move, spaceTakenErr
+
+		return move, newSpaceTakenErr(move)
 	}
 	return move, nil
 }
