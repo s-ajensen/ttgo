@@ -18,7 +18,7 @@ func (menu Menu) String() string {
 func (menu Menu) NextState(selection string) (Stringer, error) {
 	next := menu.options[selection]
 	if next == nil {
-		menuErr := errors.New(Sprintf("Invalid option '%s'\nTry again:\n", selection))
+		menuErr := errors.New(Sprintf("invalid option '%s'\nTry again:\n", selection))
 		return menu, menuErr
 	}
 	return next, nil

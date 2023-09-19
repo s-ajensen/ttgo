@@ -32,7 +32,7 @@ func TestSelectsPlayAsO(t *testing.T) {
 
 func TestReturnsErrorFor_UnknownOption(t *testing.T) {
 	next, err := mainMenu.NextState("3")
-	expectedErr := errors.New("Invalid option '3'\nTry again:\n")
+	expectedErr := errors.New("invalid option '3'\nTry again:\n")
 
 	AssertDeepEquals(t, mainMenu, next)
 	AssertEquals(t, expectedErr.Error(), err.Error())

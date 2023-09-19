@@ -1,6 +1,7 @@
 package ttgo
 
 import (
+	"errors"
 	"testing"
 	. "ttgo/assert"
 )
@@ -38,6 +39,14 @@ func TestReturnsError_ForMoveOutOfRange(t *testing.T) {
 	AssertEquals(t, board, nextBoardTooSmall)
 	AssertEquals(t, inputErr, tooBigErr)
 	AssertEquals(t, board, nextBoardTooBig)
+}
+
+func TestReturnsError_ForSpaceAlreadyTaken(t *testing.T) {
+	nextBoardSpaceTaken, spaceTakenErr := getTestBoard().Move(0, O)
+	expectedErr := errors.New("space at index '0' already taken")
+
+	AssertEquals(t, expectedErr.Error(), spaceTakenErr.Error())
+	AssertSliceEquals(t, nextBoardSpaceTaken, *getTestBoard())
 }
 
 func TestEvaluatesTieAsZero_WhenMaximizing(t *testing.T) {

@@ -23,7 +23,6 @@ func (board Board) String() string {
 // TODO: Move to own file?
 var inputErr = errors.New(Sprintf("Invalid move!\nEnter an integer between 0 and %d.", boardSize))
 
-// TODO: Need to account for double placing move
 func (board Board) NextState(selection string) (Stringer, error) {
 	space, parseErr := strconv.Atoi(selection)
 	if parseErr != nil {
