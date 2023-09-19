@@ -94,7 +94,7 @@ func TestNextStateReturns_ReplayMenu_ForFinishedGame(t *testing.T) {
 	board := Board{X, X, Blank, O, Blank, O, Blank, Blank, Blank}
 	nextState, _ := board.NextState("2")
 
-	AssertDeepEquals(t, replayMenu, nextState)
+	AssertDeepEquals(t, gameOverMenu, nextState)
 }
 
 func TestReturnsErrorFor_UnknownOption(t *testing.T) {

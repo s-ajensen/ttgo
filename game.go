@@ -45,7 +45,7 @@ func (board Board) NextState(selection string) (Stringer, error) {
 		return board, err
 	}
 	if newBoard.isGameOver() {
-		return replayMenu, nil
+		return gameOverMenu, nil
 	}
 	return newBoard, nil
 }

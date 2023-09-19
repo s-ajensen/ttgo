@@ -27,3 +27,22 @@ func TestSelectsPlayAsO(t *testing.T) {
 	AssertEquals(t, expected, next)
 	AssertEquals(t, nil, err)
 }
+
+func TestRendersGameOverOptions(t *testing.T) {
+	expected := "Play again?\n1) Yes\n2)Quit\n"
+	AssertEquals(t, expected, gameOverMenu.String())
+}
+
+func TestGameOverMenu_PlaysAgain(t *testing.T) {
+	next, _ := gameOverMenu.NextState("1")
+	AssertDeepEquals(t, mainMenu, next)
+}
+
+func TestGameOverMenu_Exits(t *testing.T) {
+	next, _ := gameOverMenu.NextState("2")
+	AssertDeepEquals(t, Exit{}, next)
+}
+
+func TestExit_SaysGoodbye(t *testing.T) {
+	AssertEquals(t, "Goodbye!", Exit{}.String())
+}
