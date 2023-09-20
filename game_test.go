@@ -55,11 +55,18 @@ func TestWinnerPanicsForUnfinishedGame(t *testing.T) {
 
 func TestNextStatePlaysMove(t *testing.T) {
 	var board Board
-	expected, _ := board.Move(0, X)
-
 	nextBoard, err := board.NextState("0")
-	AssertEquals(t, expected, nextBoard)
+	AssertEquals(t, 'X', rune(nextBoard.String()[0]))
 	AssertEquals(t, nil, err)
+}
+
+func TestNextStateResponds(t *testing.T) {
+	var board Board
+	firstMove, _ := board.Move(0, X)
+	expected := NextBoard(&firstMove).String()
+	nextBoard, _ := board.NextState("0")
+
+	AssertEquals(t, expected, nextBoard.String())
 }
 
 func TestNextStateReturnsErrorForEmptyInput(t *testing.T) {
@@ -93,14 +100,15 @@ func TestNextStateReturnsErrorFor_OutOfBoundsInput(t *testing.T) {
 func TestNextStateReturns_ReplayMenu_ForFinishedGame(t *testing.T) {
 	board := Board{X, X, Blank, O, Blank, O, Blank, Blank, Blank}
 	nextState, _ := board.NextState("2")
+	expected, _ := board.Move(2, X)
 
-	AssertDeepEquals(t, gameOverMenu, nextState)
+	AssertDeepEquals(t, newGameOverMenu(&expected), nextState)
 }
 
 func TestReturnsErrorFor_UnknownOption(t *testing.T) {
-	next, err := mainMenu.NextState("3")
+	next, err := MainMenu.NextState("3")
 	expectedErr := newInvalidOptionErr("3")
 
-	AssertDeepEquals(t, mainMenu, next)
+	AssertDeepEquals(t, MainMenu, next)
 	AssertEquals(t, expectedErr.Error(), err.Error())
 }

@@ -6,11 +6,11 @@ import (
 )
 
 func newInputErr() error {
-	return errors.New(fmt.Sprintf("Invalid move!\nEnter an integer between 0 and %d.", boardSize))
+	return errors.New(fmt.Sprintf("Invalid move!\nEnter an integer between 0 and %d.\n", len(Board{})-1))
 }
 
 func newSpaceTakenErr(move int) error {
-	return errors.New(fmt.Sprintf("space at index '%d' already taken", move))
+	return errors.New(fmt.Sprintf("space at index '%d' already taken\n", move))
 }
 
 func newInvalidOptionErr(selection string) error {

@@ -1,12 +1,10 @@
 package ttgo
 
-import (
-	. "fmt"
-)
+import "fmt"
 
 type Menu struct {
 	label   string
-	options map[string]Stringer
+	options map[string]GameState
 }
 
 func (menu Menu) String() string {
@@ -15,21 +13,37 @@ func (menu Menu) String() string {
 
 type Exit struct{}
 
+const ExitFlag = "EXIT"
+
 func (exit Exit) String() string {
-	return "Goodbye!"
+	return ExitFlag
 }
 
-var mainMenu = Menu{
+func (exit Exit) NextState(selection string) (GameState, error) {
+	return nil, nil
+}
+
+var MainMenu = Menu{
 	"Unbeatable Tic-Tac-Toe\nPlay as:\n1) X\n2) O\n",
-	map[string]Stringer{
+	map[string]GameState{
 		"1": Board{},
 		"2": NextBoard(new(Board)),
 	}}
 
-var gameOverMenu = Menu{
-	"Play again?\n1) Yes\n2)Quit\n",
-	map[string]Stringer{
-		"1": mainMenu,
-		"2": Exit{},
-	},
+func getWinLabel(board *Board) string {
+	if board.isTied() {
+		return "Tie!\n"
+	}
+	return fmt.Sprintf("%s wins!\n", board.getWinner())
+}
+
+func newGameOverMenu(board *Board) Menu {
+	label := board.String() + getWinLabel(board) + "Play again?\n1) Yes\n2) Quit\n"
+	return Menu{
+		label,
+		map[string]GameState{
+			"1": MainMenu,
+			"2": Exit{},
+		},
+	}
 }
